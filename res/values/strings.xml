@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">手写识别</string>
+    <string name="wel_title_txt">欢迎使用手写识别系统\n5秒后将进入登陆页面</string>
+    <string name="wel_time_txt">5</string>
+    <string name="title_activity_login">用户登录</string>
+    <string name="login_tv_name">用户名</string>
+    <string name="login_tv_pwd">密码</string>
+    <string name="login_btn_login">登\t\t\t\t\t\t录</string>
+    <string name="login_tv_forget">忘记密码\.\.\.</string>
+    <string name="login_tv_newuser">新用户</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="main_btn_rec">识别此张图片</string>
+    <string name="main_btn_callcam">调用相机拍摄</string>
+    <string name="main_tv_namelab">当前用户：</string>
+
+</resources>

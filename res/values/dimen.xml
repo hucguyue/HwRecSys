@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="wel_tv_title_s">20sp</dimen>
+    <dimen name="wel_tv_time_s">100sp</dimen>
+
+</resources>
