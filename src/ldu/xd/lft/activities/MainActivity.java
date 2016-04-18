@@ -14,6 +14,7 @@ import com.example.hwrecsys.R.layout;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -42,7 +43,8 @@ public class MainActivity extends Activity {
 	private ImageView imgview;
 	private List<Drawable> imglist = new ArrayList<Drawable>();
 	private String photospath = "/sdcard/DCIM/Camera/";// 照片的存放位置。
-	public final static int camera_msg = 101;// 跳转到照相机的请求码
+	private final static int camera_msg = 101;// 跳转到照相机的请求码
+	private final static int loadimages_msg = 102;// 调用相册的请求码
 	private int index = 0;// 当前显示的图片的索引
 	private File filecurrent;
 
@@ -85,6 +87,8 @@ public class MainActivity extends Activity {
 	 * 
 	 * </pre>
 	 * 
+	 * 调用相册的点击事件。</br>
+	 * 
 	 * <pre>
 	 * 识别图片的点击事件
 	 * </pre>
@@ -99,8 +103,8 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 调用android自带的照相机
 				intent.addCategory(Intent.CATEGORY_DEFAULT);
-				String name = new DateFormat().format("yyyyMMdd_hhmmss",Calendar.getInstance(Locale.CHINA))
-						+ ".jpg";// 以时间给照片命名
+				String name = new DateFormat().format("yyyyMMdd_hhmmss",
+						Calendar.getInstance(Locale.CHINA)) + ".jpg";// 以时间给照片命名
 				filecurrent = new File(photospath + name);
 				// 把文件地址转换成Uri格式
 				Uri uri = Uri.fromFile(filecurrent);
@@ -108,6 +112,18 @@ public class MainActivity extends Activity {
 				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 				startActivityForResult(intent, camera_msg);
 				// System.out.println("=========photoUri:" + photoUri);
+			}
+		});
+		this.imgview.setOnClickListener(new OnClickListener() {
+			// 调用系统图库选择要识别的照片
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(
+						Intent.ACTION_PICK,
+						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+				startActivityForResult(i, loadimages_msg);
 			}
 		});
 		this.btn_rec.setOnClickListener(new OnClickListener() {
@@ -124,9 +140,27 @@ public class MainActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == camera_msg) {
+		if (requestCode == camera_msg && data != null) {// 拍照后返回
 			Uri uri = Uri.fromFile(filecurrent);
 			imgview.setImageURI(uri);
+		} else {
+			imgview.setImageResource(R.drawable.test);
+		}
+		if (requestCode == loadimages_msg && resultCode == RESULT_OK
+				&& null != data) {//从图库中选择图片然后显示在ImageView中
+			Uri selectedImage = data.getData();
+			String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+			Cursor cursor = getContentResolver().query(selectedImage,
+					filePathColumn, null, null, null);
+			cursor.moveToFirst();
+
+			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			String picturePath = cursor.getString(columnIndex);
+			cursor.close();
+
+			imgview.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+
 		}
 	}
 
